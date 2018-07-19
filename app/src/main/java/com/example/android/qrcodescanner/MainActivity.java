@@ -2,6 +2,7 @@ package com.example.android.qrcodescanner;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
@@ -17,6 +18,8 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
 
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+    FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
     @Override
@@ -55,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Tenant/");
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
 
         cameraView = findViewById(R.id.cameraView);
         result = findViewById(R.id.textResult);
@@ -107,17 +116,24 @@ public class MainActivity extends AppCompatActivity {
                     result.post(new Runnable() {
                         @Override
                         public void run() {
+
                             Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(100);
                             result.setText(qrcodes.valueAt(0).displayValue);
 
-                            TenantDetail tenantDetail = new TenantDetail("Hi I am tenant");
+                            String details = result.getText().toString();
 
-                            String idString = result.getText().toString();
-                            String[] ids = idString.split(" ");
+                            String[] detailArray = details.split(" ");
 
-                            databaseReference.child(ids[1]).child(ids[0]).setValue(tenantDetail);
+                            TenantDetails tenantDetails = new TenantDetails(firebaseUser.getUid(), detailArray[0], detailArray[1], detailArray[2], detailArray[3], detailArray[4], detailArray[0]);
+                            databaseReference = firebaseDatabase.getReference("Tenants/");
+                            databaseReference.child(firebaseUser.getUid()).setValue(tenantDetails);
 
+                            databaseReference = firebaseDatabase.getReference("PG/" + detailArray[0] + "/Tenants/");
+                            databaseReference.child(firebaseUser.getUid()).setValue(tenantDetails);
+
+                            startActivity(new Intent(MainActivity.this, ComplaintActivity.class));
+                            finish();
                         }
                     });
                 }
