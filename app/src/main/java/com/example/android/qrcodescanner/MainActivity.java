@@ -17,6 +17,8 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     BarcodeDetector barcodeDetector;
     CameraSource cameraSource;
     final int RequestCameraPermissionID = 1001;
+
+    DatabaseReference databaseReference;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -50,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Tenant/");
 
         cameraView = findViewById(R.id.cameraView);
         result = findViewById(R.id.textResult);
@@ -97,12 +103,21 @@ public class MainActivity extends AppCompatActivity {
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> qrcodes = detections.getDetectedItems();
                 if(qrcodes.size() != 0){
+
                     result.post(new Runnable() {
                         @Override
                         public void run() {
                             Vibrator vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(100);
                             result.setText(qrcodes.valueAt(0).displayValue);
+
+                            TenantDetail tenantDetail = new TenantDetail("Hi I am tenant");
+
+                            String idString = result.getText().toString();
+                            String[] ids = idString.split(" ");
+
+                            databaseReference.child(ids[1]).child(ids[0]).setValue(tenantDetail);
+
                         }
                     });
                 }
