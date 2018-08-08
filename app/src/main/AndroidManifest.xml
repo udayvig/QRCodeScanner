@@ -17,7 +17,8 @@
                 android:name="com.google.android.gms.vision.DEPENDENCIES"
                 android:value="barcode" />
         </activity>
-        <activity android:name=".ComplaintActivity" />
+        <activity android:name=".ComplaintActivity">
+        </activity>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

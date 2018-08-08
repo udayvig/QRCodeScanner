@@ -2,7 +2,7 @@ package com.example.android.qrcodescanner;
 
 public class TenantDetails {
 
-    String id, name, phone, room, dateOfJoining, rentAmount, pgId;
+    public String id, name, phone, room, dateOfJoining, rentAmount, pgId;
 
     public TenantDetails(String id, String pgId, String name, String phone, String room, String dateOfJoining, String rentAmount) {
         this.id = id;

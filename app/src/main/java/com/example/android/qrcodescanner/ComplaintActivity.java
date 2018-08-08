@@ -1,6 +1,5 @@
 package com.example.android.qrcodescanner;
 
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,9 +48,7 @@ public class ComplaintActivity extends AppCompatActivity {
         firebaseUser = firebaseAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
 
-
-        databaseReference = firebaseDatabase.getReference().child("Tenants/").child(firebaseUser.getUid());
-
+        databaseReference = firebaseDatabase.getReference("Tenants/" + firebaseUser.getUid());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
 
@@ -85,10 +82,14 @@ public class ComplaintActivity extends AppCompatActivity {
                 String secondLevel = secondEditText.getText().toString();
                 String thirdLevel = thirdEditText.getText().toString();
                 String feedBack = feedbackEditText.getText().toString();
+                String newId = databaseReference.push().getKey();
                 boolean resolved = Boolean.parseBoolean(resolvedEditText.getText().toString());
 
-                ComplaintDetails complaintDetails = new ComplaintDetails(feedBack, resolved, myName, myRoom, dateString);
-                databaseReference.child(pgId1).child("Complaints").child(firstLevel).child(secondLevel).child(thirdLevel).setValue(complaintDetails);
+                ComplaintDetails complaintDetails = new ComplaintDetails(feedBack, myName, myRoom, dateString, firstLevel, secondLevel, thirdLevel, resolved, newId);
+                databaseReference.child(pgId1).child("Complaints").child(newId).setValue(complaintDetails);
+
+                ComplaintDetails complaintDetails1 = new ComplaintDetails(feedBack, dateString, firstLevel, secondLevel, thirdLevel, newId, resolved);
+                databaseReference.child(pgId1).child("Tenants").child(myId).child("MyComplaints").child(newId).setValue(complaintDetails1);
 
             }
         });
