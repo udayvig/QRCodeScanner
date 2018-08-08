@@ -129,8 +129,11 @@ public class MainActivity extends AppCompatActivity {
                             databaseReference = firebaseDatabase.getReference("Tenants/");
                             databaseReference.child(firebaseUser.getUid()).setValue(tenantDetails);
 
-                            databaseReference = firebaseDatabase.getReference("PG/" + detailArray[0] + "/Tenants/");
+                            databaseReference = firebaseDatabase.getReference("PG/" + detailArray[0] + "/Tenants/CurrentTenants/");
                             databaseReference.child(firebaseUser.getUid()).setValue(tenantDetails);
+
+                            databaseReference = firebaseDatabase.getReference("PG/" + detailArray[0] + "/Rooms/" + detailArray[2] + "/Tenant/CurrentTenants");
+                            databaseReference.setValue(tenantDetails);
 
                             startActivity(new Intent(MainActivity.this, ComplaintActivity.class));
                             finish();
