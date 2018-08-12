@@ -59,13 +59,13 @@ public class ComplaintActivity extends AppCompatActivity {
                 myName = dataSnapshot.child("name").getValue(String.class);
                 pgId1 = dataSnapshot.child("pgId").getValue(String.class);
 
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+
 
         myId = firebaseUser.getUid();
         databaseReference = firebaseDatabase.getReference("PG/");
@@ -89,7 +89,7 @@ public class ComplaintActivity extends AppCompatActivity {
                 databaseReference.child(pgId1).child("Complaints").child(newId).setValue(complaintDetails);
 
                 ComplaintDetails complaintDetails1 = new ComplaintDetails(feedBack, dateString, firstLevel, secondLevel, thirdLevel, newId, resolved);
-                databaseReference.child(pgId1).child("Tenants").child(myId).child("MyComplaints").child(newId).setValue(complaintDetails1);
+                databaseReference.child(pgId1).child("Tenants/CurrentTenants").child(myId).child("MyComplaints").child(newId).setValue(complaintDetails1);
 
             }
         });
