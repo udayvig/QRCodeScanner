@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
                             String[] detailArray = details.split(" ");
 
-                            TenantDetails tenantDetails = new TenantDetails(firebaseUser.getUid(), detailArray[0], detailArray[1], detailArray[2], detailArray[3], detailArray[4], detailArray[5]);
+                            TenantDetails tenantDetails = new TenantDetails(firebaseUser.getUid(), detailArray[0], detailArray[1], detailArray[2], detailArray[3], detailArray[4], detailArray[5], detailArray[6]);
                             databaseReference = firebaseDatabase.getReference("Tenants/");
                             databaseReference.child(firebaseUser.getUid()).setValue(tenantDetails);
 
